@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="shortcut icon" type="png" href="images/icon/favicon.png">
+	<title>Login SignUp</title>
+	<link rel="stylesheet" type="text/css" href="loginStyle.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+		<div class="form-box">
+			<div class="button-box">
+				<div id="btn"></div>
+				<button type="button" class="toggle-btn" id="log" onclick="login()" style="color: #fff;">Log In</button>
+				<button type="button" class="toggle-btn" id="reg" onclick="register()">Register</button>
+			</div>
+			<div class="social-icons">
+				<img src="images/icon/fb2.png">
+				<img src="images/icon/insta2.png">
+				<img src="images/icon/tt2.png">
+			</div>
+			
+			<!-- Login Form -->
+			<form id="login" class="input-group">
+				<div class="inp">
+					<img src="images/icon/user.png"><input type="email" id="loginEmail" class="input-field" placeholder="Email" style="width: 88%; border:none;" required="required">
+				</div>
+				<div class="inp">
+					<img src="images/icon/password.png"><input type="password" id="loginPassword" class="input-field" placeholder="Password" style="width: 88%; border: none;" required="required">
+				</div>
+				<input type="checkbox" class="check-box">Remember Password
+				<button type="submit" class="submit-btn">Log In</button>
+			</form>
+			<div class="other" id="other">
+				<div class="instead">
+					<h3>or</h3>
+				</div>
+				<button class="connect" onclick="google()">
+					<img src="images/icon/google.png"><span>Sign in with Google</span>
+				</button>
+			</div>
+			
+			<!-- Registration Form -->
+			<form id="register" class="input-group">
+				<input type="text" id="regUsername" class="input-field" placeholder="Full Name" required="required">
+				<input type="email" id="regEmail" class="input-field" placeholder="Email Address" required="required">
+				<input type="password" id="regPassword" class="input-field" placeholder="Create Password" name="psame" required="required">
+				<input type="password" id="regConfirmPassword" class="input-field" placeholder="Confirm Password" name="psame" required="required">
+				<input type="checkbox" class="check-box" id="chkAgree" onclick="goFurther()">I agree to the Terms & Conditions
+				<button type="submit" id="btnSubmit" class="submit-btn reg-btn">Register</button>
+			</form>
+		</div>
+		<script type="text/javascript" src="script.js"></script>
+		<script>
+			// Login form submission
+			document.getElementById('login').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const email = document.getElementById('loginEmail').value;
+				const password = document.getElementById('loginPassword').value;
+
+				fetch('http://localhost:3000/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ email, password }),
+				})
+				.then(response => {
+					if (response.ok) {
+						alert('Login successful!');
+						window.location.href = 'index.html';
+					} else {
+						alert('Login failed. Please check your credentials.');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					alert('An error occurred. Please try again.');
+				});
+			});
+
+			// Registration form submission
+			document.getElementById('register').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const username = document.getElementById('regUsername').value;
+				const email = document.getElementById('regEmail').value;
+				const password = document.getElementById('regPassword').value;
+				const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+				if (password !== confirmPassword) {
+					alert('Passwords do not match');
+					return;
+				}
+
+				fetch('http://localhost:3000/register', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ username, email, password }),
+				})
+				.then(response => {
+					if (response.ok) {
+						alert('Registration successful! Please log in.');
+						login(); // Switch to login form
+					} else {
+						alert('Registration failed. Please try again.');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					alert('An error occurred. Please try again.');
+				});
+			});
+		</script>
+</body>
+</html>
